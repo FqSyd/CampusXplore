@@ -9,7 +9,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-🌐 **Live Deployment**: [https://campus-xplore.vercel.app](https://campus-xplore.vercel.app) *(or your Vercel deployment URL)*  
+🌐 **Live Deployment**: [https://campusxplore-zeta.vercel.app](https://campusxplore-zeta.vercel.app)  
 📖 **Architecture Documentation**: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)  
 🤝 **Contribution Guide**: [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md)
 
