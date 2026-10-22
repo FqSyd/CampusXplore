@@ -1,0 +1,35 @@
+{
+  "campusName": "Verdant University Main Campus",
+  "version": "1.0.0",
+  "description": "Fictional modern collegiate campus featuring academic, research, student living, and recreational facilities.",
+  "scaleFactor": 6.0,
+  "walkingSpeedMetersPerSec": 1.4,
+  "ground": {
+    "size": [180, 180],
+    "grassColor": "#13231B",
+    "pavementColor": "#243242",
+    "walkwayColor": "#3B4D61"
+  },
+  "cameraPresets": {
+    "default": {
+      "name": "3D Isometric View",
+      "position": [0, 95, 115],
+      "target": [0, 0, 0]
+    },
+    "top": {
+      "name": "Top-Down Map View",
+      "position": [0, 140, 0.01],
+      "target": [0, 0, 0]
+    },
+    "south": {
+      "name": "South Entrance View",
+      "position": [0, 45, 100],
+      "target": [0, 5, 25]
+    },
+    "north": {
+      "name": "North Quad View",
+      "position": [0, 50, -100],
+      "target": [0, 5, -20]
+    }
+  }
+}

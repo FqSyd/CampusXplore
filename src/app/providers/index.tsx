@@ -1,0 +1,14 @@
+import React from 'react';
+
+export interface AppProvidersProps {
+  children: React.ReactNode;
+}
+
+/**
+ * Global application providers wrapper
+ */
+export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
+  return <>{children}</>;
+};
+
+export default AppProviders;

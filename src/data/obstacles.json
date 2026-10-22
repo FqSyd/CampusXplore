@@ -1,0 +1,139 @@
+[
+  {
+    "id": "obs_admin_block",
+    "name": "Administration Building",
+    "type": "building",
+    "bounds": { "minX": -11.5, "maxX": 11.5, "minZ": 20.5, "maxZ": 35.5, "height": 10 },
+    "description": "Solid multistory administrative block. Non-walkable physical obstacle."
+  },
+  {
+    "id": "obs_cs_block",
+    "name": "Computer Science Block",
+    "type": "building",
+    "bounds": { "minX": -45.5, "maxX": -26.5, "minZ": 1.5, "maxZ": 18.5, "height": 12 },
+    "description": "Four-story academic computer science building."
+  },
+  {
+    "id": "obs_it_block",
+    "name": "Information Technology Block",
+    "type": "building",
+    "bounds": { "minX": -45.5, "maxX": -26.5, "minZ": -26.0, "maxZ": -10.0, "height": 11 },
+    "description": "Academic IT engineering facility."
+  },
+  {
+    "id": "obs_library",
+    "name": "Central Library",
+    "type": "building",
+    "bounds": { "minX": 25.5, "maxX": 46.5, "minZ": -1.5, "maxZ": 17.5, "height": 11 },
+    "description": "Three-story university library and archive."
+  },
+  {
+    "id": "obs_auditorium",
+    "name": "Main Auditorium",
+    "type": "building",
+    "bounds": { "minX": 24.5, "maxX": 47.5, "minZ": 25.5, "maxZ": 46.5, "height": 13 },
+    "description": "Large event hall and auditorium."
+  },
+  {
+    "id": "obs_canteen",
+    "name": "Main Canteen",
+    "type": "building",
+    "bounds": { "minX": -23.5, "maxX": -4.5, "minZ": -40.5, "maxZ": -23.5, "height": 6 },
+    "description": "Dining hall and kitchen facility."
+  },
+  {
+    "id": "obs_lab_block",
+    "name": "Laboratory Block",
+    "type": "building",
+    "bounds": { "minX": -45.5, "maxX": -26.5, "minZ": 29.5, "maxZ": 46.5, "height": 10 },
+    "description": "Physical sciences and robotics research laboratory."
+  },
+  {
+    "id": "obs_sports_ground",
+    "name": "Sports Field (Turf Pitch)",
+    "type": "sports_pitch",
+    "bounds": { "minX": 24.5, "maxX": 48.5, "minZ": -64.5, "maxZ": -43.5, "height": 2 },
+    "description": "Enclosed athletic field and stadium turf. Pedestrians must use outer perimeter walkway."
+  },
+  {
+    "id": "obs_parking_area",
+    "name": "Vehicle Parking Lot",
+    "type": "restricted_zone",
+    "bounds": { "minX": 15.5, "maxX": 32.5, "minZ": 52.5, "maxZ": 67.5, "height": 1 },
+    "description": "Automobile parking zone. Pedestrians access via dedicated walkway."
+  },
+  {
+    "id": "obs_medical_center",
+    "name": "Medical Center",
+    "type": "building",
+    "bounds": { "minX": 27.5, "maxX": 44.5, "minZ": -29.5, "maxZ": -14.5, "height": 7 },
+    "description": "Campus health clinic and hospital facility."
+  },
+  {
+    "id": "obs_sac",
+    "name": "Student Activity Center",
+    "type": "building",
+    "bounds": { "minX": -45.5, "maxX": -26.5, "minZ": -52.0, "maxZ": -36.0, "height": 9 },
+    "description": "Recreation and student union complex."
+  },
+  {
+    "id": "obs_hostel",
+    "name": "Hostel Residence",
+    "type": "building",
+    "bounds": { "minX": -24.5, "maxX": -3.5, "minZ": -69.5, "maxZ": -50.5, "height": 14 },
+    "description": "Multistory dormitory residence building."
+  },
+  {
+    "id": "obs_quad_fountain",
+    "name": "Central Quad Water Basin & Fountain",
+    "type": "water_body",
+    "bounds": { "minX": -3.8, "maxX": 3.8, "minZ": -3.8, "maxZ": 3.8, "height": 2 },
+    "description": "Centerpiece fountain basin in the quad. Pedestrians walk around its circular promenade."
+  },
+  {
+    "id": "obs_wall_south_left",
+    "name": "South Perimeter Wall (West)",
+    "type": "wall",
+    "bounds": { "minX": -80, "maxX": -8.5, "minZ": 67.2, "maxZ": 68.8, "height": 3 },
+    "description": "South perimeter security boundary."
+  },
+  {
+    "id": "obs_wall_south_right",
+    "name": "South Perimeter Wall (East)",
+    "type": "wall",
+    "bounds": { "minX": 8.5, "maxX": 80, "minZ": 67.2, "maxZ": 68.8, "height": 3 },
+    "description": "South perimeter security boundary."
+  },
+  {
+    "id": "obs_wall_north_left",
+    "name": "North Perimeter Wall (West)",
+    "type": "wall",
+    "bounds": { "minX": -80, "maxX": -7.5, "minZ": -68.8, "maxZ": -67.2, "height": 3 },
+    "description": "North perimeter security boundary."
+  },
+  {
+    "id": "obs_wall_north_right",
+    "name": "North Perimeter Wall (East)",
+    "type": "wall",
+    "bounds": { "minX": 7.5, "maxX": 80, "minZ": -68.8, "maxZ": -67.2, "height": 3 },
+    "description": "North perimeter security boundary."
+  },
+  {
+    "id": "dyn_admin_east_closure",
+    "name": "Admin East Promenade (Maintenance Closure)",
+    "type": "blocked_path",
+    "bounds": { "minX": 16.0, "maxX": 20.0, "minZ": 22.0, "maxZ": 26.0, "height": 2 },
+    "description": "Temporary pathway closure for paving maintenance. Toggle to test dynamic A* rerouting!",
+    "isDynamic": true,
+    "isActive": false
+  },
+  {
+    "id": "dyn_canteen_plaza_closure",
+    "name": "Canteen Forecourt (Event Closure)",
+    "type": "blocked_path",
+    "bounds": { "minX": -12.0, "maxX": -8.0, "minZ": -22.0, "maxZ": -18.0, "height": 2 },
+    "description": "Festival tent closure. Forces pedestrians to detour via Tech Quad Walkway.",
+    "isDynamic": true,
+    "isActive": false
+  }
+]

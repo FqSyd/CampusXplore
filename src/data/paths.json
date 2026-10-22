@@ -1,0 +1,398 @@
+{
+  "nodes": [
+    {
+      "id": "node_main_gate",
+      "name": "Main Gate",
+      "position": [0, 0, 68],
+      "isBuildingEntrance": true,
+      "buildingId": "main_gate",
+      "type": "gate"
+    },
+    {
+      "id": "node_main_ave_south",
+      "name": "Main Avenue (South)",
+      "position": [0, 0, 56],
+      "type": "path"
+    },
+    {
+      "id": "node_south_fork_cross",
+      "name": "Main Gate Promenade Fork",
+      "position": [0, 0, 46],
+      "type": "intersection"
+    },
+    {
+      "id": "node_parking_turn",
+      "name": "Parking Access Path",
+      "position": [14, 0, 56],
+      "type": "crossing"
+    },
+    {
+      "id": "node_parking_entrance",
+      "name": "Parking Area",
+      "position": [18, 0, 56],
+      "isBuildingEntrance": true,
+      "buildingId": "parking_area",
+      "type": "building_entrance"
+    },
+    {
+      "id": "node_admin_forecourt",
+      "name": "Admin Forecourt Steps",
+      "position": [0, 0, 39],
+      "type": "path"
+    },
+    {
+      "id": "node_admin_entrance",
+      "name": "Administration Block",
+      "position": [0, 0, 36],
+      "isBuildingEntrance": true,
+      "buildingId": "admin_block",
+      "type": "building_entrance"
+    },
+    {
+      "id": "node_admin_sw_turn",
+      "name": "Admin West Promenade (South)",
+      "position": [-18, 0, 46],
+      "type": "intersection"
+    },
+    {
+      "id": "node_admin_west_mid",
+      "name": "Admin West Promenade (Central)",
+      "position": [-18, 0, 28],
+      "type": "path"
+    },
+    {
+      "id": "node_admin_nw_corner",
+      "name": "Admin West Promenade (North)",
+      "position": [-18, 0, 10],
+      "type": "intersection"
+    },
+    {
+      "id": "node_admin_se_turn",
+      "name": "Admin East Promenade (South)",
+      "position": [18, 0, 46],
+      "type": "intersection"
+    },
+    {
+      "id": "node_admin_east_mid",
+      "name": "Admin East Promenade (Central)",
+      "position": [18, 0, 28],
+      "type": "path"
+    },
+    {
+      "id": "node_admin_ne_corner",
+      "name": "Admin East Promenade (North)",
+      "position": [18, 0, 10],
+      "type": "intersection"
+    },
+    {
+      "id": "node_quad_south",
+      "name": "Central Quad (South)",
+      "position": [0, 0, 10],
+      "type": "intersection"
+    },
+    {
+      "id": "node_quad_se",
+      "name": "Quad South-East Promenade",
+      "position": [7, 0, 7],
+      "type": "path"
+    },
+    {
+      "id": "node_quad_sw",
+      "name": "Quad South-West Promenade",
+      "position": [-7, 0, 7],
+      "type": "path"
+    },
+    {
+      "id": "node_quad_center",
+      "name": "Central Quad",
+      "position": [0, 0, 5],
+      "isBuildingEntrance": true,
+      "buildingId": "central_quad",
+      "type": "destination"
+    },
+    {
+      "id": "node_quad_east",
+      "name": "Central Quad (East)",
+      "position": [10, 0, 0],
+      "type": "intersection"
+    },
+    {
+      "id": "node_quad_west",
+      "name": "Central Quad (West)",
+      "position": [-10, 0, 0],
+      "type": "intersection"
+    },
+    {
+      "id": "node_quad_ne",
+      "name": "Quad North-East Promenade",
+      "position": [7, 0, -7],
+      "type": "path"
+    },
+    {
+      "id": "node_quad_nw",
+      "name": "Quad North-West Promenade",
+      "position": [-7, 0, -7],
+      "type": "path"
+    },
+    {
+      "id": "node_quad_north",
+      "name": "Central Quad (North)",
+      "position": [0, 0, -10],
+      "type": "intersection"
+    },
+    {
+      "id": "node_auditorium_turn",
+      "name": "Auditorium Plaza Approach",
+      "position": [20, 0, 46],
+      "type": "crossing"
+    },
+    {
+      "id": "node_auditorium_entrance",
+      "name": "Main Auditorium",
+      "position": [24, 0, 36],
+      "isBuildingEntrance": true,
+      "buildingId": "auditorium",
+      "type": "building_entrance"
+    },
+    {
+      "id": "node_library_turn",
+      "name": "Library Promenade Walkway",
+      "position": [20, 0, 8],
+      "type": "intersection"
+    },
+    {
+      "id": "node_library_entrance",
+      "name": "Central Library",
+      "position": [25, 0, 8],
+      "isBuildingEntrance": true,
+      "buildingId": "library",
+      "type": "building_entrance"
+    },
+    {
+      "id": "node_library_north_turn",
+      "name": "East Ring Corridor",
+      "position": [20, 0, -10],
+      "type": "path"
+    },
+    {
+      "id": "node_medical_turn",
+      "name": "Medical Center Approach",
+      "position": [20, 0, -22],
+      "type": "intersection"
+    },
+    {
+      "id": "node_medical_entrance",
+      "name": "Medical Center",
+      "position": [27, 0, -22],
+      "isBuildingEntrance": true,
+      "buildingId": "medical_center",
+      "type": "building_entrance"
+    },
+    {
+      "id": "node_east_north_cross",
+      "name": "Sports & North-East Fork",
+      "position": [18, 0, -38],
+      "type": "intersection"
+    },
+    {
+      "id": "node_sports_entrance",
+      "name": "Sports Ground",
+      "position": [20, 0, -52],
+      "isBuildingEntrance": true,
+      "buildingId": "sports_ground",
+      "type": "building_entrance"
+    },
+    {
+      "id": "node_lab_turn",
+      "name": "Lab Block Approach",
+      "position": [-22, 0, 46],
+      "type": "crossing"
+    },
+    {
+      "id": "node_lab_entrance",
+      "name": "Laboratory Block",
+      "position": [-26, 0, 38],
+      "isBuildingEntrance": true,
+      "buildingId": "lab_block",
+      "type": "building_entrance"
+    },
+    {
+      "id": "node_cs_turn",
+      "name": "CS Walkway Intersection",
+      "position": [-25, 0, 10],
+      "type": "intersection"
+    },
+    {
+      "id": "node_cs_entrance",
+      "name": "Computer Science Block",
+      "position": [-27, 0, 10],
+      "isBuildingEntrance": true,
+      "buildingId": "cs_block",
+      "type": "building_entrance"
+    },
+    {
+      "id": "node_cs_it_connector",
+      "name": "Tech Quad Walkway",
+      "position": [-25, 0, -4],
+      "type": "path"
+    },
+    {
+      "id": "node_it_turn",
+      "name": "IT Block Walkway Intersection",
+      "position": [-25, 0, -18],
+      "type": "intersection"
+    },
+    {
+      "id": "node_it_entrance",
+      "name": "Information Technology Block",
+      "position": [-27, 0, -18],
+      "isBuildingEntrance": true,
+      "buildingId": "it_block",
+      "type": "building_entrance"
+    },
+    {
+      "id": "node_sac_turn",
+      "name": "SAC Boulevard",
+      "position": [-25, 0, -44],
+      "type": "intersection"
+    },
+    {
+      "id": "node_sac_entrance",
+      "name": "Student Activity Center",
+      "position": [-27, 0, -44],
+      "isBuildingEntrance": true,
+      "buildingId": "sac",
+      "type": "building_entrance"
+    },
+    {
+      "id": "node_canteen_south",
+      "name": "Canteen South Promenade",
+      "position": [-14, 0, -18],
+      "type": "intersection"
+    },
+    {
+      "id": "node_canteen_entrance",
+      "name": "Main Canteen",
+      "position": [-14, 0, -23],
+      "isBuildingEntrance": true,
+      "buildingId": "canteen",
+      "type": "building_entrance"
+    },
+    {
+      "id": "node_canteen_se_corner",
+      "name": "Canteen South-East Corner",
+      "position": [-2, 0, -18],
+      "type": "intersection"
+    },
+    {
+      "id": "node_canteen_east_walk",
+      "name": "Canteen East Pathway",
+      "position": [-2, 0, -32],
+      "type": "path"
+    },
+    {
+      "id": "node_north_central_cross",
+      "name": "North Central Avenue Fork",
+      "position": [0, 0, -44],
+      "type": "intersection"
+    },
+    {
+      "id": "node_hostel_courtyard",
+      "name": "Hostel Courtyard Walkway",
+      "position": [-14, 0, -46],
+      "type": "intersection"
+    },
+    {
+      "id": "node_hostel_entrance",
+      "name": "Hostel",
+      "position": [-14, 0, -50],
+      "isBuildingEntrance": true,
+      "buildingId": "hostel",
+      "type": "building_entrance"
+    },
+    {
+      "id": "node_north_plaza",
+      "name": "North Gate Forecourt",
+      "position": [0, 0, -56],
+      "type": "intersection"
+    },
+    {
+      "id": "node_north_gate",
+      "name": "North Gate",
+      "position": [0, 0, -68],
+      "isBuildingEntrance": true,
+      "buildingId": "north_gate",
+      "type": "gate"
+    }
+  ],
+  "edges": [
+    { "from": "node_main_gate", "to": "node_main_ave_south", "distance": 72, "type": "road" },
+    { "from": "node_main_ave_south", "to": "node_south_fork_cross", "distance": 60, "type": "road" },
+    { "from": "node_main_ave_south", "to": "node_parking_turn", "distance": 85, "type": "path" },
+    { "from": "node_parking_turn", "to": "node_parking_entrance", "distance": 25, "type": "path" },
+
+    { "from": "node_south_fork_cross", "to": "node_admin_forecourt", "distance": 42, "type": "walkway" },
+    { "from": "node_admin_forecourt", "to": "node_admin_entrance", "distance": 18, "type": "walkway" },
+
+    { "from": "node_south_fork_cross", "to": "node_admin_sw_turn", "distance": 108, "type": "road" },
+    { "from": "node_admin_sw_turn", "to": "node_lab_turn", "distance": 25, "type": "walkway" },
+    { "from": "node_lab_turn", "to": "node_lab_entrance", "distance": 50, "type": "walkway" },
+    { "from": "node_admin_sw_turn", "to": "node_admin_west_mid", "distance": 108, "type": "walkway" },
+    { "from": "node_admin_west_mid", "to": "node_admin_nw_corner", "distance": 108, "type": "walkway" },
+
+    { "from": "node_south_fork_cross", "to": "node_admin_se_turn", "distance": 108, "type": "road" },
+    { "from": "node_admin_se_turn", "to": "node_auditorium_turn", "distance": 25, "type": "walkway" },
+    { "from": "node_auditorium_turn", "to": "node_auditorium_entrance", "distance": 62, "type": "walkway" },
+    { "from": "node_admin_se_turn", "to": "node_admin_east_mid", "distance": 108, "type": "walkway" },
+    { "from": "node_admin_east_mid", "to": "node_admin_ne_corner", "distance": 108, "type": "walkway" },
+
+    { "from": "node_admin_nw_corner", "to": "node_quad_south", "distance": 108, "type": "walkway" },
+    { "from": "node_admin_ne_corner", "to": "node_quad_south", "distance": 108, "type": "walkway" },
+
+    { "from": "node_quad_south", "to": "node_quad_se", "distance": 45, "type": "walkway" },
+    { "from": "node_quad_se", "to": "node_quad_east", "distance": 45, "type": "walkway" },
+    { "from": "node_quad_east", "to": "node_quad_ne", "distance": 45, "type": "walkway" },
+    { "from": "node_quad_ne", "to": "node_quad_north", "distance": 45, "type": "walkway" },
+
+    { "from": "node_quad_south", "to": "node_quad_sw", "distance": 45, "type": "walkway" },
+    { "from": "node_quad_sw", "to": "node_quad_west", "distance": 45, "type": "walkway" },
+    { "from": "node_quad_west", "to": "node_quad_nw", "distance": 45, "type": "walkway" },
+    { "from": "node_quad_nw", "to": "node_quad_north", "distance": 45, "type": "walkway" },
+
+    { "from": "node_quad_south", "to": "node_quad_center", "distance": 30, "type": "walkway" },
+
+    { "from": "node_admin_ne_corner", "to": "node_library_turn", "distance": 20, "type": "walkway" },
+    { "from": "node_quad_east", "to": "node_library_turn", "distance": 75, "type": "walkway" },
+    { "from": "node_library_turn", "to": "node_library_entrance", "distance": 30, "type": "walkway" },
+    { "from": "node_library_turn", "to": "node_library_north_turn", "distance": 108, "type": "walkway" },
+
+    { "from": "node_library_north_turn", "to": "node_medical_turn", "distance": 72, "type": "walkway" },
+    { "from": "node_medical_turn", "to": "node_medical_entrance", "distance": 42, "type": "walkway" },
+    { "from": "node_medical_turn", "to": "node_east_north_cross", "distance": 98, "type": "walkway" },
+    { "from": "node_east_north_cross", "to": "node_sports_entrance", "distance": 85, "type": "walkway" },
+    { "from": "node_east_north_cross", "to": "node_north_central_cross", "distance": 115, "type": "walkway" },
+
+    { "from": "node_admin_nw_corner", "to": "node_cs_turn", "distance": 42, "type": "walkway" },
+    { "from": "node_quad_west", "to": "node_cs_turn", "distance": 90, "type": "walkway" },
+    { "from": "node_cs_turn", "to": "node_cs_entrance", "distance": 15, "type": "walkway" },
+    { "from": "node_cs_turn", "to": "node_cs_it_connector", "distance": 84, "type": "walkway" },
+    { "from": "node_cs_it_connector", "to": "node_it_turn", "distance": 84, "type": "walkway" },
+    { "from": "node_it_turn", "to": "node_it_entrance", "distance": 15, "type": "walkway" },
+    { "from": "node_it_turn", "to": "node_sac_turn", "distance": 156, "type": "walkway" },
+    { "from": "node_sac_turn", "to": "node_sac_entrance", "distance": 15, "type": "walkway" },
+
+    { "from": "node_it_turn", "to": "node_canteen_south", "distance": 66, "type": "walkway" },
+    { "from": "node_quad_north", "to": "node_canteen_south", "distance": 96, "type": "walkway" },
+    { "from": "node_canteen_south", "to": "node_canteen_entrance", "distance": 30, "type": "walkway" },
+    { "from": "node_canteen_south", "to": "node_canteen_se_corner", "distance": 72, "type": "walkway" },
+    { "from": "node_canteen_se_corner", "to": "node_canteen_east_walk", "distance": 84, "type": "walkway" },
+    { "from": "node_canteen_east_walk", "to": "node_north_central_cross", "distance": 75, "type": "walkway" },
+
+    { "from": "node_sac_turn", "to": "node_hostel_courtyard", "distance": 66, "type": "walkway" },
+    { "from": "node_hostel_courtyard", "to": "node_hostel_entrance", "distance": 24, "type": "walkway" },
+    { "from": "node_hostel_courtyard", "to": "node_north_central_cross", "distance": 85, "type": "walkway" },
+
+    { "from": "node_north_central_cross", "to": "node_north_plaza", "distance": 72, "type": "road" },
+    { "from": "node_north_plaza", "to": "node_north_gate", "distance": 72, "type": "road" }
+  ]
+}
