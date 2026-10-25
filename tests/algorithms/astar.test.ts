@@ -55,5 +55,35 @@ graph.setEdgeBlocked('node_admin_east_mid', 'node_admin_ne_corner', false);
 const resInvalid = findPathAStar(graph, 'node_non_existent', 'node_library_entrance');
 assert(resInvalid.found === false && !!resInvalid.errorMessage, 'Should handle non-existent node gracefully');
 
+// 6. Node-Level A* Calculations Test [f(n) = g(n) + h(n)]
+assert(Array.isArray(res1.routeNodesAnalysis), 'Result should include routeNodesAnalysis array');
+assert(res1.routeNodesAnalysis.length === res1.path.length, 'routeNodesAnalysis length must match path length');
+
+const startNodeAnalysis = res1.routeNodesAnalysis[0];
+assert(startNodeAnalysis.isStart === true, 'First route node must be marked as start');
+assert(startNodeAnalysis.g === 0, 'Start node g(n) accumulated cost must be exactly 0 m');
+assert(startNodeAnalysis.f === startNodeAnalysis.g + startNodeAnalysis.h, 'Start node f(n) must equal g(n) + h(n)');
+
+const destNodeAnalysis = res1.routeNodesAnalysis[res1.routeNodesAnalysis.length - 1];
+assert(destNodeAnalysis.isDestination === true, 'Last route node must be marked as destination');
+assert(destNodeAnalysis.h === 0, 'Destination node h(n) heuristic estimate must be exactly 0 m');
+assert(destNodeAnalysis.f === destNodeAnalysis.g, 'Destination node f(n) must equal accumulated g(n)');
+
+// Verify mathematical accuracy f(n) = g(n) + h(n) for all intermediate waypoints
+let allFormulasValid = true;
+for (const wp of res1.routeNodesAnalysis) {
+  if (wp.f !== wp.g + wp.h) {
+    allFormulasValid = false;
+    break;
+  }
+}
+assert(allFormulasValid, 'All route waypoint nodes must satisfy f(n) = g(n) + h(n)');
+
+// 7. Search Steps and Candidate Snapshot Test
+assert(res1.steps.length > 0, 'Exploration steps should be recorded');
+const sampleStepWithCandidates = res1.steps.find((s) => s.openSetCandidates && s.openSetCandidates.length > 0);
+assert(!!sampleStepWithCandidates, 'Steps should capture open set candidate nodes with scores');
+assert(!!res1.steps[0].selectionReason, 'Search steps should include selection reason explaining lowest f(n)');
+
 console.log(`\nResults: ${testsPassed} passed, ${testsFailed} failed.`);
 if (testsFailed > 0) process.exit(1);

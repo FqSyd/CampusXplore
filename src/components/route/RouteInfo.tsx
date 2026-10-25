@@ -10,6 +10,8 @@ interface RouteInfoProps {
   startBuilding: CampusBuilding | null;
   destBuilding: CampusBuilding | null;
   graph: CampusGraph;
+  selectedNodeId?: string | null;
+  onSelectNode?: (nodeId: string) => void;
 }
 
 export const RouteInfo: React.FC<RouteInfoProps> = ({
@@ -17,6 +19,8 @@ export const RouteInfo: React.FC<RouteInfoProps> = ({
   startBuilding,
   destBuilding,
   graph,
+  selectedNodeId,
+  onSelectNode,
 }) => {
   const [showDetailedSteps, setShowDetailedSteps] = useState(false);
 
@@ -130,31 +134,54 @@ export const RouteInfo: React.FC<RouteInfoProps> = ({
         </button>
 
         {showDetailedSteps && (
-          <div className="mt-2 space-y-1.5 max-h-40 overflow-y-auto pr-1">
-            {waypoints.map((wp) => (
-              <div
-                key={`wp-item-${wp.nodeId}-${wp.index}`}
-                className="flex items-center gap-2 text-xs py-1 px-2 rounded bg-slate-900/60 border border-slate-800"
-              >
-                <span
-                  className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0 ${
-                    wp.isStart
-                      ? 'bg-emerald-500 text-white'
-                      : wp.isDestination
-                      ? 'bg-rose-500 text-white'
-                      : 'bg-slate-700 text-slate-300'
+          <div className="mt-2 space-y-1.5 max-h-44 overflow-y-auto pr-1">
+            {waypoints.map((wp) => {
+              const analysis = result.routeNodesAnalysis?.find((a) => a.nodeId === wp.nodeId);
+              const isSelected = wp.nodeId === selectedNodeId;
+
+              return (
+                <div
+                  key={`wp-item-${wp.nodeId}-${wp.index}`}
+                  onClick={() => onSelectNode?.(wp.nodeId)}
+                  className={`flex items-center justify-between text-xs py-1.5 px-2 rounded cursor-pointer transition ${
+                    isSelected
+                      ? 'bg-cyan-950/70 border border-cyan-400 text-cyan-200'
+                      : 'bg-slate-900/60 border border-slate-800 hover:border-slate-700 text-slate-300'
                   }`}
+                  title="Click to view A* calculation for this waypoint"
                 >
-                  {wp.index}
-                </span>
-                <span className="font-medium text-slate-200 truncate">{wp.name}</span>
-                {wp.isBuildingEntrance && (
-                  <span className="ml-auto text-[9px] px-1.5 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800 shrink-0">
-                    Entrance
-                  </span>
-                )}
-              </div>
-            ))}
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span
+                      className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0 ${
+                        wp.isStart
+                          ? 'bg-emerald-500 text-white'
+                          : wp.isDestination
+                          ? 'bg-rose-500 text-white'
+                          : isSelected
+                          ? 'bg-cyan-500 text-white'
+                          : 'bg-slate-700 text-slate-300'
+                      }`}
+                    >
+                      {wp.index}
+                    </span>
+                    <span className="font-medium truncate">{wp.name}</span>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                    {analysis && (
+                      <span className="text-[10px] font-mono text-cyan-300 font-semibold bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-800/40">
+                        f={analysis.f}m
+                      </span>
+                    )}
+                    {wp.isBuildingEntrance && (
+                      <span className="text-[9px] px-1 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800">
+                        Entrance
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

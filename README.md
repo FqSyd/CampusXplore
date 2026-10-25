@@ -42,13 +42,22 @@ Commercial street maps (such as Google Maps) often fall short on academic campus
 
 - **Interactive 3D Campus World**: Realistic 3D low-poly buildings, walkways, green lawns, trees, daylight lighting, and glowing navigation waypoint markers.
 - **Switchable 2D Topographic Blueprint**: Instant toggle between full 3D simulation and a 2D architectural map without floating overlays blocking the view.
+- **Interactive A* Node Analysis HUD**: Every circular waypoint along the calculated route is directly clickable in 3D and 2D. Selecting any node displays a compact HUD panel detailing:
+  - Node Name and ID.
+  - Mathematical cost formula: $f(n) = g(n) + h(n)$ in physical meters ($m$).
+  - $g(n)$: Actual accumulated walking cost from origin.
+  - $h(n)$: Euclidean straight-line heuristic estimate to destination entrance door.
+  - $f(n)$: Total estimated route cost through that waypoint.
+  - Predecessor (parent) node and search expansion order.
+  - Natural language explanation of the path cost.
+  - Next / Previous waypoint stepper buttons.
 - **Animated 3D Walking Character**: A walking character traverses each A\* waypoint with smooth 60 FPS motion and a real-time HUD displaying progress percentage ($0\% \to 100\%$), remaining meters countdown, and estimated walking minutes.
 - **Dynamic Camera Controls**: Orbit, overhead Bird's Eye view, focus target, and third-person **Follow Walker** camera.
 - **Campus Pathway Updates & Real Recalculation**:
   - `EVENT IN PROGRESS` (Canteen Forecourt)
   - `PATHWAY UNDER REPAIR` (Admin East Promenade)
-  - When an alert is toggled, affected edges are physically disconnected in `CampusGraph`, and A\* dynamically finds the fastest alternative detour in real time.
-- **Algorithm Transparency**: Step-by-step search visualizer (evaluating open set vs. closed set) and educational code inspection modal.
+  - When an alert is toggled, affected edges are physically disconnected in `CampusGraph`, and A\* dynamically finds the fastest alternative detour in real time, refreshing all node evaluation scores and clearing stale states.
+- **Algorithm Transparency & Search Visualizer**: Step-by-step search visualizer displaying explored nodes, current node under evaluation, eligible neighboring Open Set candidates, and the algorithmic justification for node expansion (lowest $f(n)$ score in priority queue).
 
 ---
 
@@ -58,12 +67,26 @@ At each node $n$, A\* evaluates the cost function:
 
 $$f(n) = g(n) + h(n)$$
 
-- **$g(n)$**: The exact accumulated walking distance (in meters) from the origin to node $n$.
-- **$h(n)$**: The straight-line Euclidean distance heuristic to the destination entrance door:
+- **$g(n)$ (Accumulated Cost)**: The exact walking distance (in meters) accumulated along the recorded path from the start node to node $n$.
+- **$h(n)$ (Heuristic Estimate)**: The admissible straight-line Euclidean distance estimate from node $n$ to the destination entrance door:
   $$h(n) = \sqrt{(x_{\text{goal}} - x_n)^2 + (z_{\text{goal}} - z_n)^2}$$
-- **$f(n)$**: The total estimated route cost through node $n$.
+- **$f(n)$ (Estimated Total Cost)**: The estimated total cost of the complete route passing through node $n$.
 
-Because Euclidean distance in physical space is always $\le$ actual walking distance, $h(n)$ is **admissible** and **consistent**, guaranteeing the mathematically shortest collision-free route.
+Because Euclidean distance in physical space never overestimates actual pathway walking distance ($h(n) \le d(n, \text{goal})$), $h(n)$ is **admissible** and **consistent**, guaranteeing the mathematically shortest collision-free route.
+
+### Node Analysis Example
+```
+A* Node Analysis
+Selected Node: Administration Walkway (node_admin_east_mid)
+g(n) = 240 m  [Start to Node]
+h(n) = 310 m  [Heuristic to Goal]
+f(n) = 240 + 310 = 550 m
+Predecessor: Administration South-East Turn (node_admin_se_turn)
+Expansion Order: #4
+Explanation: "The route cost accumulated from Main Gate to this node is 240 m.
+The estimated remaining cost to Central Library is 310 m.
+The estimated total cost through this node is 550 m."
+```
 
 ---
 

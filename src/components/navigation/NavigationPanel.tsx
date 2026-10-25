@@ -32,6 +32,8 @@ interface NavigationPanelProps {
   onToggleObstacle: (id: string) => void;
   walkerProgress?: WalkerProgress | null;
   rerouteNotice?: string;
+  selectedNodeId?: string | null;
+  onSelectNode?: (nodeId: string) => void;
 }
 
 export const NavigationPanel: React.FC<NavigationPanelProps> = ({
@@ -57,6 +59,8 @@ export const NavigationPanel: React.FC<NavigationPanelProps> = ({
   onToggleObstacle,
   walkerProgress,
   rerouteNotice,
+  selectedNodeId,
+  onSelectNode,
 }) => {
   const startBuilding = buildings.find((b) => b.id === startBuildingId) || null;
   const destBuilding = buildings.find((b) => b.id === destBuildingId) || null;
@@ -139,6 +143,8 @@ export const NavigationPanel: React.FC<NavigationPanelProps> = ({
         startBuilding={startBuilding}
         destBuilding={destBuilding}
         graph={graph}
+        selectedNodeId={selectedNodeId}
+        onSelectNode={onSelectNode}
       />
     </aside>
   );

@@ -21,7 +21,7 @@ import { Campus2D } from '../components/map';
 import { Header } from '../components/layout';
 import { NavigationPanel } from '../components/navigation';
 import { CameraControls } from '../components/ui';
-import { AlgorithmCode } from '../components/algorithm';
+import { AlgorithmCode, NodeAnalysisCard } from '../components/algorithm';
 
 export const App: React.FC = () => {
   // 1. Initialize Navigation Graph from decoupled campus data
@@ -66,6 +66,10 @@ export const App: React.FC = () => {
   const [walkerPosition, setWalkerPosition] = useState<Position3D | null>(null);
   const [rerouteNotice, setRerouteNotice] = useState<string>('');
 
+  // A* Node-level analysis state
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [isAnalysisCardOpen, setIsAnalysisCardOpen] = useState<boolean>(true);
+
   // Modals and scenario active tracking
   const [isAlgorithmModalOpen, setIsAlgorithmModalOpen] = useState<boolean>(false);
   const [activeScenarioId, setActiveScenarioId] = useState<string | undefined>('s1');
@@ -92,6 +96,16 @@ export const App: React.FC = () => {
     const nodeId = graph.getNodeForBuilding(destBuilding.id);
     return nodeId ? graph.getNode(nodeId) || null : null;
   }, [destBuilding, graph]);
+
+  // Derived selected waypoint analysis data
+  const selectedNodeAnalysis = useMemo(() => {
+    if (!result?.routeNodesAnalysis || result.routeNodesAnalysis.length === 0) return null;
+    if (selectedNodeId) {
+      const match = result.routeNodesAnalysis.find((n) => n.nodeId === selectedNodeId);
+      if (match) return match;
+    }
+    return result.routeNodesAnalysis[0] || null;
+  }, [result, selectedNodeId]);
 
   // Clean up any search animation timer on unmount
   useEffect(() => {
@@ -153,6 +167,13 @@ export const App: React.FC = () => {
     // Reset walker progress on fresh calculation
     setWalkerProgress(null);
 
+    // Store result immediately so explorationSteps and routeNodes are available
+    setResult(aStarResult);
+    setIsAnalysisCardOpen(true);
+    if (aStarResult.path && aStarResult.path.length > 0) {
+      setSelectedNodeId(aStarResult.path[0]);
+    }
+
     // Route found successfully
     if (animateSearch && aStarResult.steps.length > 1) {
       setIsSearching(true);
@@ -178,13 +199,14 @@ export const App: React.FC = () => {
           }
           setIsSearching(false);
           setStatus('found');
-          setResult(aStarResult);
           setShowRoute(true);
+          if (aStarResult.path && aStarResult.path.length > 0) {
+            setSelectedNodeId(aStarResult.path[0]);
+          }
         }
       }, intervalMs);
     } else {
       // Immediate execution
-      setResult(aStarResult);
       setStatus('found');
       setShowRoute(true);
       setCurrentStepIndex(aStarResult.steps.length - 1);
@@ -245,7 +267,26 @@ export const App: React.FC = () => {
     setWalkerProgress(null);
     setWalkerPosition(null);
     setRerouteNotice('');
+    setSelectedNodeId(null);
+    setIsAnalysisCardOpen(false);
   }, []);
+
+  // Handler: Select specific waypoint node on route
+  const handleSelectNode = useCallback((nodeId: string) => {
+    setSelectedNodeId(nodeId);
+    setIsAnalysisCardOpen(true);
+  }, []);
+
+  // Handler: Select waypoint by index on route
+  const handleSelectWaypointIndex = useCallback(
+    (index: number) => {
+      if (result?.routeNodesAnalysis && result.routeNodesAnalysis[index]) {
+        setSelectedNodeId(result.routeNodesAnalysis[index].nodeId);
+        setIsAnalysisCardOpen(true);
+      }
+    },
+    [result]
+  );
 
   // Handler: Walker arrival
   const handleWalkerArrived = useCallback(() => {
@@ -349,6 +390,8 @@ export const App: React.FC = () => {
           onToggleObstacle={handleToggleObstacle}
           walkerProgress={walkerProgress}
           rerouteNotice={rerouteNotice}
+          selectedNodeId={selectedNodeId}
+          onSelectNode={handleSelectNode}
         />
 
         {/* Center / Right Visualization Canvas (3D Campus OR 2D Topographic Map - Never overlapping!) */}
@@ -377,6 +420,9 @@ export const App: React.FC = () => {
               onWalkerProgress={setWalkerProgress}
               onWalkerPositionChange={setWalkerPosition}
               onWalkerArrived={handleWalkerArrived}
+              routeNodesAnalysis={result?.routeNodesAnalysis || []}
+              selectedNodeId={selectedNodeId}
+              onSelectNode={handleSelectNode}
             />
           ) : (
             /* Full 2D Topographic Campus Map (Replaces main area cleanly, no floating overlay) */
@@ -394,7 +440,31 @@ export const App: React.FC = () => {
               routeCoordinates={result?.pathCoordinates || []}
               onSelectBuilding={handleSelectBuilding}
               isMinimap={false}
+              selectedNodeId={selectedNodeId}
+              onSelectNode={handleSelectNode}
             />
+          )}
+
+          {/* Floating A* Node-Level Calculation Analysis Card (HUD) */}
+          {(showRoute || isSearching) && isAnalysisCardOpen && (
+            <NodeAnalysisCard
+              selectedNode={selectedNodeAnalysis}
+              currentStep={isSearching && result?.steps ? result.steps[currentStepIndex] : null}
+              isSearching={isSearching}
+              onSelectWaypointIndex={handleSelectWaypointIndex}
+              onClose={() => setIsAnalysisCardOpen(false)}
+            />
+          )}
+
+          {/* Quick Re-open Node Analysis Button if minimized */}
+          {showRoute && !isAnalysisCardOpen && (
+            <button
+              onClick={() => setIsAnalysisCardOpen(true)}
+              className="absolute top-4 right-4 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-cyan-400 hover:text-cyan-300 border border-cyan-500/40 shadow-lg text-xs font-semibold backdrop-blur-md transition"
+              title="Open A* Node Analysis panel"
+            >
+              <span>A* Node Analysis</span>
+            </button>
           )}
 
           {/* Floating Camera & View Controls */}

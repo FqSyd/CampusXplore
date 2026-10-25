@@ -25,6 +25,8 @@ export interface Campus2DProps {
   routeCoordinates: Position3D[];
   onSelectBuilding: (building: CampusBuilding) => void;
   isMinimap?: boolean;
+  selectedNodeId?: string | null;
+  onSelectNode?: (nodeId: string) => void;
 }
 
 export const Campus2D: React.FC<Campus2DProps> = ({
@@ -41,6 +43,8 @@ export const Campus2D: React.FC<Campus2DProps> = ({
   routeCoordinates,
   onSelectBuilding,
   isMinimap = false,
+  selectedNodeId,
+  onSelectNode,
 }) => {
   // Map dimensions
   const mapSize = isMinimap ? 280 : 600;
@@ -174,6 +178,8 @@ export const Campus2D: React.FC<Campus2DProps> = ({
           toSvgX={toSvgX}
           toSvgY={toSvgY}
           isMinimap={isMinimap}
+          selectedNodeId={selectedNodeId}
+          onSelectNode={onSelectNode}
         />
 
         {/* Compass Rose (North Indicator) */}

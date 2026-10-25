@@ -558,7 +558,9 @@ def create_document():
         "It serves as a comprehensive, polished, and academically rigorous showcase of AI-powered navigation."
     )
 
-    doc_path = os.path.abspath("CampusXplore_Project_Handoff_Document.docx")
+    docs_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "docs"))
+    os.makedirs(docs_dir, exist_ok=True)
+    doc_path = os.path.join(docs_dir, "CampusXplore_Project_Handoff_Document.docx")
     doc.save(doc_path)
     print(f"Document successfully created at: {doc_path}")
 

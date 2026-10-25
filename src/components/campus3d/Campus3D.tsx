@@ -8,6 +8,7 @@ import {
   CampusObstacle,
   CameraViewMode,
   WalkerProgress,
+  RouteNodeAnalysis,
 } from '../../types';
 import { CampusGraph } from '../../algorithms/graph';
 import { Pathways } from './Pathways';
@@ -44,6 +45,9 @@ export interface Campus3DProps {
   onWalkerProgress?: (progress: WalkerProgress) => void;
   onWalkerArrived?: () => void;
   onWalkerPositionChange?: (pos: Position3D) => void;
+  routeNodesAnalysis?: RouteNodeAnalysis[];
+  selectedNodeId?: string | null;
+  onSelectNode?: (nodeId: string) => void;
 }
 
 export const Campus3D: React.FC<Campus3DProps> = ({
@@ -68,6 +72,9 @@ export const Campus3D: React.FC<Campus3DProps> = ({
   onWalkerProgress,
   onWalkerArrived,
   onWalkerPositionChange,
+  routeNodesAnalysis,
+  selectedNodeId,
+  onSelectNode,
 }) => {
   const walkerPosRef = useRef<Position3D | null>(null);
 
@@ -146,10 +153,13 @@ export const Campus3D: React.FC<Campus3DProps> = ({
             />
           )}
 
-          {/* Calculated 3D Glowing Route Line */}
+          {/* Calculated 3D Glowing Route Line with Interactive Waypoint Nodes */}
           <NavigationRoute
             coordinates={routeCoordinates}
             visible={showRoute && routeCoordinates.length >= 2}
+            routeNodes={routeNodesAnalysis}
+            selectedNodeId={selectedNodeId}
+            onSelectNode={onSelectNode}
           />
 
           {/* 3D Walking Character following actual A* Path */}

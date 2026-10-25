@@ -10,6 +10,8 @@ export interface MapNodesProps {
   toSvgX: (x: number) => number;
   toSvgY: (z: number) => number;
   isMinimap?: boolean;
+  selectedNodeId?: string | null;
+  onSelectNode?: (nodeId: string) => void;
 }
 
 export const MapNodes: React.FC<MapNodesProps> = ({
@@ -21,6 +23,8 @@ export const MapNodes: React.FC<MapNodesProps> = ({
   toSvgX,
   toSvgY,
   isMinimap = false,
+  selectedNodeId = null,
+  onSelectNode,
 }) => {
   return (
     <g name="map-nodes">
@@ -28,17 +32,41 @@ export const MapNodes: React.FC<MapNodesProps> = ({
       {!isMinimap &&
         nodes.map((node) => {
           const isRouteNode = routeNodeIds.includes(node.id);
+          const isSelected = isRouteNode && node.id === selectedNodeId;
           const cx = toSvgX(node.position[0]);
           const cy = toSvgY(node.position[2]);
 
           return (
-            <circle
-              key={`node-2d-${node.id}`}
-              cx={cx}
-              cy={cy}
-              r={isRouteNode ? 3 : 1.5}
-              fill={isRouteNode ? '#00F0FF' : '#475569'}
-            />
+            <g key={`node-2d-${node.id}`}>
+              {isSelected && (
+                <circle
+                  cx={cx}
+                  cy={cy}
+                  r={8}
+                  fill="#F59E0B"
+                  fillOpacity={0.3}
+                  stroke="#FBBF24"
+                  strokeWidth={2}
+                  className="animate-ping"
+                />
+              )}
+              <circle
+                cx={cx}
+                cy={cy}
+                r={isSelected ? 5 : isRouteNode ? 3.5 : 1.5}
+                fill={isSelected ? '#FBBF24' : isRouteNode ? '#00F0FF' : '#475569'}
+                stroke={isRouteNode ? '#FFFFFF' : 'none'}
+                strokeWidth={isRouteNode ? 1 : 0}
+                className={isRouteNode ? 'cursor-pointer hover:opacity-80 transition' : ''}
+                onClick={() => {
+                  if (isRouteNode && onSelectNode) {
+                    onSelectNode(node.id);
+                  }
+                }}
+              >
+                {isRouteNode && <title>{`${node.name} (Click for A* scores)`}</title>}
+              </circle>
+            </g>
           );
         })}
 

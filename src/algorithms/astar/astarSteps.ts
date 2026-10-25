@@ -35,6 +35,10 @@ export class MinHeap {
     return this.heap.some((item) => item.id === id);
   }
 
+  public getAll(): OpenSetNode[] {
+    return [...this.heap];
+  }
+
   private bubbleUp(index: number) {
     const element = this.heap[index];
     while (index > 0) {

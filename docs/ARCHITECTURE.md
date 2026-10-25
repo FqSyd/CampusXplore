@@ -91,20 +91,55 @@ $$f(n) = g(n) + h(n)$$
    $$h(n) \le d(n, \text{goal})$$
    The heuristic is **admissible** and **consistent** (monotone). Consequently, A* is mathematically guaranteed to find the shortest walkable route without searching the entire graph.
 
+4. **Node-Level Score Recording & State Tracking**:
+   During execution, the algorithm records:
+   - For every explored step: `nodeId`, `parent`, actual `g(n)`, heuristic estimate `h(n)`, total evaluation `f(n)`, snapshot of eligible candidate nodes in the Open Set priority queue, and the explicit selection justification (`lowest f(n)`).
+   - For every waypoint along the optimal reconstructed path: an immutable `RouteNodeAnalysis` object containing the mathematical breakdown $f(n) = g(n) + h(n)$, predecessor, expansion order, and natural language explanation.
+
 ---
 
-## 4. Directory & Module Organization
+## 4. Architectural Separation of Concerns
+
+CampusXplore strictly isolates responsibilities to ensure maintainability and eliminate circular dependencies:
+
+1. **Campus Data (`src/data/`)**:
+   Static spatial definitions of university buildings, entrance coordinates, road network waypoints, and obstacle bounding boxes. Has zero dependencies on algorithms, React, or WebGL.
+
+2. **Walkable Graph (`src/algorithms/graph.ts`)**:
+   In-memory weighted adjacency list constructed from campus data. Exposes topological queries (`getNeighbors`, `getDistance`), unit conversions, and dynamic runtime edge blocking (`setEdgeBlocked`).
+
+3. **A* Algorithm (`src/algorithms/astar/`)**:
+   Pure TypeScript implementation of the A* search algorithm using a binary min-heap priority queue. Operates solely on the abstract `CampusGraph` interface without UI or WebGL coupling.
+
+4. **Search-State Recording (`src/algorithms/astar/astarSteps.ts`, `src/types/algorithm.ts`)**:
+   Captures real algorithmic states (visited nodes, candidate snapshots, tie-breaking justifications, reconstructed waypoint analysis) at runtime for visualization without fabricating synthetic search sequences.
+
+5. **Route Visualization (`src/components/campus3d/NavigationRoute.tsx`, `src/components/campus2d/MapRoute.tsx`)**:
+   Transforms calculated Cartesian waypoint arrays into smooth Catmull-Rom 3D spline tubes, glowing energy orbs, and interactive waypoint discs in 3D and 2D.
+
+6. **Walking Animation (`src/components/campus3d/WalkingCharacter.tsx`)**:
+   Independent 60 FPS interpolation engine animating the walking character along route segments, tracking real-time heading orientation, distance countdown, and percentage completion.
+
+7. **Event Closures (`src/components/navigation/ObstacleControlPanel.tsx`, `App.tsx`)**:
+   Dynamic incident management. Toggling pathway closures (`EVENT IN PROGRESS`, `PATHWAY UNDER REPAIR`) mutates graph edge availability and automatically triggers re-routing while clearing stale node evaluation metrics.
+
+8. **UI Components (`src/components/algorithm/NodeAnalysisCard.tsx`, `src/components/ui/`)**:
+   Compact, decoupled floating HUD cards and modals displaying real-time algorithm metrics, formulas, and waypoint stepper controls without obstructing the 3D scene.
+
+---
+
+## 5. Directory & Module Organization
 
 | Directory | Purpose |
 | :--- | :--- |
 | `src/app/` | Application root entry, provider wrappers, and top-level orchestrator (`App.tsx`, `main.tsx`). |
 | `src/algorithms/` | Pure pathfinding logic (`astar.ts`, `graph.ts`, `heuristic.ts`). Independent of React/DOM. |
-| `src/components/campus/` | 3D WebGL campus environment, buildings, lights, and ground. |
+| `src/components/campus3d/` | 3D WebGL campus environment, buildings, lights, and scene. |
+| `src/components/campus2d/` | Full-screen 2D architectural blueprint map. |
 | `src/components/walker/` | 3D walking character locomotion, orientation calculations, and animation loop. |
-| `src/components/map/` | Full-screen 2D architectural blueprint map. |
-| `src/components/navigation/` | Origin/destination selectors, pathway update incident cards, preset scenarios. |
 | `src/components/route/` | Route line rendering, navigation progress status, and metrics HUD. |
-| `src/components/algorithm/` | Educational visualizer and step-by-step code highlighter. |
+| `src/components/navigation/` | Origin/destination selectors, pathway update incident cards, preset scenarios. |
+| `src/components/algorithm/` | A* Node Analysis floating card, visualizer, and code modal. |
 | `src/components/ui/` | Reusable UI primitives (Button, Modal, Panel, CameraControls). |
 | `src/components/layout/` | Header and structural layout wrappers. |
 | `src/data/` | Spatial campus models (buildings, entrance nodes, pathways, obstacle bounds). |
