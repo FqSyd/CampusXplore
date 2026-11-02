@@ -15,6 +15,7 @@ export interface CameraControlsProps {
   viewType: '3d' | '2d';
   onToggleViewType: () => void;
   hasActiveRoute?: boolean;
+  isAnalysisPanelOpen?: boolean;
 }
 
 export const CameraControls: React.FC<CameraControlsProps> = ({
@@ -30,9 +31,17 @@ export const CameraControls: React.FC<CameraControlsProps> = ({
   viewType,
   onToggleViewType,
   hasActiveRoute = false,
+  isAnalysisPanelOpen = false,
 }) => {
   return (
-    <div className="absolute top-4 right-4 z-10 flex flex-col gap-2 pointer-events-auto">
+    <div
+      id="camera-controls-panel"
+      className={`absolute top-4 z-20 flex flex-col gap-2 pointer-events-auto transition-all duration-300 ${
+        isAnalysisPanelOpen
+          ? 'right-4 md:right-[26rem] max-md:top-auto max-md:bottom-4'
+          : 'right-4'
+      }`}
+    >
       {/* 2D / 3D Full Simulation Mode Toggle */}
       <div className="glass-panel rounded-xl p-1 border border-blue-500/40 shadow-2xl flex items-center gap-1">
         <button

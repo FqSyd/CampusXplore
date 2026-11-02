@@ -423,6 +423,7 @@ export const App: React.FC = () => {
               routeNodesAnalysis={result?.routeNodesAnalysis || []}
               selectedNodeId={selectedNodeId}
               onSelectNode={handleSelectNode}
+              isAnalysisPanelOpen={(showRoute || isSearching) && isAnalysisCardOpen}
             />
           ) : (
             /* Full 2D Topographic Campus Map (Replaces main area cleanly, no floating overlay) */
@@ -456,11 +457,11 @@ export const App: React.FC = () => {
             />
           )}
 
-          {/* Quick Re-open Node Analysis Button if minimized */}
+          {/* Quick Re-open Node Analysis Button if minimized (positioned next to CameraControls) */}
           {showRoute && !isAnalysisCardOpen && (
             <button
               onClick={() => setIsAnalysisCardOpen(true)}
-              className="absolute top-4 right-4 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-cyan-400 hover:text-cyan-300 border border-cyan-500/40 shadow-lg text-xs font-semibold backdrop-blur-md transition"
+              className="absolute top-4 right-44 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-cyan-400 hover:text-cyan-300 border border-cyan-500/40 shadow-lg text-xs font-semibold backdrop-blur-md transition cursor-pointer"
               title="Open A* Node Analysis panel"
             >
               <span>A* Node Analysis</span>
@@ -481,6 +482,7 @@ export const App: React.FC = () => {
             viewType={viewType}
             onToggleViewType={() => setViewType(viewType === '3d' ? '2d' : '3d')}
             hasActiveRoute={hasActiveRoute}
+            isAnalysisPanelOpen={(showRoute || isSearching) && isAnalysisCardOpen}
           />
         </main>
       </div>

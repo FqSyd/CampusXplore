@@ -48,6 +48,7 @@ export interface Campus3DProps {
   routeNodesAnalysis?: RouteNodeAnalysis[];
   selectedNodeId?: string | null;
   onSelectNode?: (nodeId: string) => void;
+  isAnalysisPanelOpen?: boolean;
 }
 
 export const Campus3D: React.FC<Campus3DProps> = ({
@@ -75,6 +76,7 @@ export const Campus3D: React.FC<Campus3DProps> = ({
   routeNodesAnalysis,
   selectedNodeId,
   onSelectNode,
+  isAnalysisPanelOpen = false,
 }) => {
   const walkerPosRef = useRef<Position3D | null>(null);
 
@@ -178,6 +180,7 @@ export const Campus3D: React.FC<Campus3DProps> = ({
             selectedStartBuildingId={startBuilding?.id || null}
             selectedDestBuildingId={destBuilding?.id || null}
             onSelectBuilding={onSelectBuilding}
+            isAnalysisPanelOpen={isAnalysisPanelOpen}
           />
         </Suspense>
       </Canvas>

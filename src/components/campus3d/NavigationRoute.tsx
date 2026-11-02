@@ -163,7 +163,7 @@ export const NavigationRoute: React.FC<NavigationRouteProps> = ({
 
                 {/* Floating Waypoint Floating HTML Badge */}
                 {nodeData && (
-                  <Html position={[0, 2.2, 0]} center distanceFactor={24}>
+                  <Html position={[0, 2.2, 0]} center distanceFactor={24} zIndexRange={[15, 0]}>
                     <div className="pointer-events-none select-none bg-slate-950/90 border border-amber-400 text-amber-300 font-mono text-[10px] font-bold px-2.5 py-1 rounded-full shadow-lg whitespace-nowrap flex items-center gap-1.5 animate-bounce">
                       <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
                       <span>{nodeData.nodeName}: f={nodeData.f}m (g={nodeData.g} + h={nodeData.h})</span>
@@ -175,7 +175,7 @@ export const NavigationRoute: React.FC<NavigationRouteProps> = ({
 
             {/* Hovered Waypoint Tooltip */}
             {isHovered && !isSelected && nodeData && (
-              <Html position={[0, 1.5, 0]} center distanceFactor={28}>
+              <Html position={[0, 1.5, 0]} center distanceFactor={28} zIndexRange={[15, 0]}>
                 <div className="pointer-events-none select-none bg-slate-900/90 border border-cyan-400 text-cyan-200 font-mono text-[9px] font-semibold px-2 py-0.5 rounded-lg shadow-md whitespace-nowrap">
                   {nodeData.nodeName} • Click for A* calculation
                 </div>

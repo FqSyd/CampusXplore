@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useRef, useMemo } from 'react';
 import { Html } from '@react-three/drei';
+import { useThree, useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
 import { CampusBuilding } from '../../types';
 
 export interface CampusLabelsProps {
@@ -8,6 +10,7 @@ export interface CampusLabelsProps {
   selectedStartBuildingId: string | null;
   selectedDestBuildingId: string | null;
   onSelectBuilding: (building: CampusBuilding) => void;
+  isAnalysisPanelOpen?: boolean;
 }
 
 export const CampusLabels: React.FC<CampusLabelsProps> = ({
@@ -16,7 +19,155 @@ export const CampusLabels: React.FC<CampusLabelsProps> = ({
   selectedStartBuildingId,
   selectedDestBuildingId,
   onSelectBuilding,
+  isAnalysisPanelOpen = false,
 }) => {
+  const { camera, size, gl } = useThree();
+  const labelContainerRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  // Reusable vectors for zero-allocation 60 FPS calculations
+  const tempVec = useMemo(() => new THREE.Vector3(), []);
+  const camDir = useMemo(() => new THREE.Vector3(), []);
+  const camToObj = useMemo(() => new THREE.Vector3(), []);
+
+  // Half-dimensions of typical label badges in screen pixels
+  const LABEL_HALF_WIDTH = 65;
+  const LABEL_HALF_HEIGHT = 16;
+  const SAFETY_BUFFER = 12;
+
+  useFrame(() => {
+    if (!showLabels) return;
+
+    const canvasEl = gl.domElement;
+    if (!canvasEl) return;
+    const canvasRect = canvasEl.getBoundingClientRect();
+
+    // 1. Check A* Node Analysis Panel live boundary
+    let panelBounds: { left: number; right: number; top: number; bottom: number } | null = null;
+    const panelEl = document.getElementById('astar-node-analysis-panel');
+    if (panelEl && isAnalysisPanelOpen) {
+      const r = panelEl.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) {
+        panelBounds = {
+          left: r.left - canvasRect.left,
+          right: r.right - canvasRect.left,
+          top: r.top - canvasRect.top,
+          bottom: r.bottom - canvasRect.top,
+        };
+      }
+    }
+
+    // 2. Check Camera Controls Panel live boundary
+    let controlsBounds: { left: number; right: number; top: number; bottom: number } | null = null;
+    const controlsEl = document.getElementById('camera-controls-panel');
+    if (controlsEl) {
+      const r = controlsEl.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) {
+        controlsBounds = {
+          left: r.left - canvasRect.left,
+          right: r.right - canvasRect.left,
+          top: r.top - canvasRect.top,
+          bottom: r.bottom - canvasRect.top,
+        };
+      }
+    }
+
+    camera.getWorldDirection(camDir);
+
+    for (const b of buildings) {
+      const el = labelContainerRefs.current[b.id];
+      if (!el) continue;
+
+      const height = b.size[1];
+      const labelY = height + (b.id === 'main_gate' ? 4 : b.id === 'sports_ground' ? 4 : 3);
+
+      // Check if building position is in front of the camera
+      camToObj.set(
+        b.position[0] - camera.position.x,
+        labelY - camera.position.y,
+        b.position[2] - camera.position.z
+      );
+
+      if (camToObj.dot(camDir) <= 0) {
+        // Behind camera: hide smoothly
+        if (el.style.opacity !== '0') {
+          el.style.opacity = '0';
+          el.style.pointerEvents = 'none';
+          el.style.visibility = 'hidden';
+        }
+        continue;
+      }
+
+      // Project 3D coordinates to NDC [-1, 1]
+      tempVec.set(b.position[0], labelY, b.position[2]);
+      tempVec.project(camera);
+
+      // Verify camera depth bounds
+      if (tempVec.z > 1 || tempVec.z < -1) {
+        if (el.style.opacity !== '0') {
+          el.style.opacity = '0';
+          el.style.pointerEvents = 'none';
+          el.style.visibility = 'hidden';
+        }
+        continue;
+      }
+
+      // Convert NDC to canvas screen pixels
+      const screenX = ((tempVec.x + 1) / 2) * size.width;
+      const screenY = ((-tempVec.y + 1) / 2) * size.height;
+
+      // Label bounding box in screen coordinates
+      const labelLeft = screenX - LABEL_HALF_WIDTH;
+      const labelRight = screenX + LABEL_HALF_WIDTH;
+      const labelTop = screenY - LABEL_HALF_HEIGHT;
+      const labelBottom = screenY + LABEL_HALF_HEIGHT;
+
+      let isObstructed = false;
+
+      // Check intersection with A* Node Analysis Panel
+      if (panelBounds) {
+        const overlapsPanel = !(
+          labelRight < panelBounds.left - SAFETY_BUFFER ||
+          labelLeft > panelBounds.right + SAFETY_BUFFER ||
+          labelBottom < panelBounds.top - SAFETY_BUFFER ||
+          labelTop > panelBounds.bottom + SAFETY_BUFFER
+        );
+        if (overlapsPanel) {
+          isObstructed = true;
+        }
+      }
+
+      // Check intersection with Camera Controls Panel
+      if (!isObstructed && controlsBounds) {
+        const overlapsControls = !(
+          labelRight < controlsBounds.left - SAFETY_BUFFER ||
+          labelLeft > controlsBounds.right + SAFETY_BUFFER ||
+          labelBottom < controlsBounds.top - SAFETY_BUFFER ||
+          labelTop > controlsBounds.bottom + SAFETY_BUFFER
+        );
+        if (overlapsControls) {
+          isObstructed = true;
+        }
+      }
+
+      // Apply visibility state without triggering React re-renders
+      if (isObstructed) {
+        if (el.style.opacity !== '0') {
+          el.style.opacity = '0';
+          el.style.pointerEvents = 'none';
+          el.style.visibility = 'hidden';
+          el.style.transform = 'scale(0.85)';
+        }
+      } else {
+        if (el.style.opacity !== '1') {
+          el.style.opacity = '1';
+          el.style.pointerEvents = 'auto';
+          el.style.visibility = 'visible';
+          el.style.transform = 'scale(1)';
+        }
+      }
+    }
+  });
+
   if (!showLabels) return null;
 
   return (
@@ -37,20 +188,25 @@ export const CampusLabels: React.FC<CampusLabelsProps> = ({
             <Html
               center
               distanceFactor={85}
-              zIndexRange={[100, 0]}
+              zIndexRange={[15, 0]}
               style={{
                 pointerEvents: 'auto',
                 cursor: 'pointer',
                 userSelect: 'none',
-                transition: 'all 0.2s ease',
               }}
             >
               <div
+                ref={(el) => {
+                  labelContainerRefs.current[b.id] = el;
+                }}
                 onClick={(e) => {
                   e.stopPropagation();
                   onSelectBuilding(b);
                 }}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold shadow-xl border backdrop-blur-md transition-all duration-200 transform hover:scale-110 active:scale-95 ${
+                style={{
+                  transition: 'opacity 0.2s ease, transform 0.2s ease',
+                }}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold shadow-xl border backdrop-blur-md transform hover:scale-110 active:scale-95 ${
                   isStart
                     ? 'bg-emerald-600/90 text-white border-emerald-400 shadow-emerald-500/40 ring-2 ring-emerald-400'
                     : isDest

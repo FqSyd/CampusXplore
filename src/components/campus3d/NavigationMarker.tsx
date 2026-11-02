@@ -63,7 +63,7 @@ export const StartMarker: React.FC<MarkerProps> = ({ position, label = 'START' }
         </mesh>
 
         {/* High-visibility 3D HTML Badge */}
-        <Html position={[0, 1.3, 0]} center distanceFactor={70}>
+        <Html position={[0, 1.3, 0]} center distanceFactor={70} zIndexRange={[15, 0]}>
           <div className="flex flex-col items-center pointer-events-none select-none">
             <div className="bg-emerald-600/95 border-2 border-emerald-300 text-white font-bold text-xs px-2.5 py-0.5 rounded-full shadow-lg shadow-emerald-500/50 flex items-center gap-1.5 whitespace-nowrap animate-bounce">
               <span className="w-2 h-2 rounded-full bg-white inline-block animate-ping"></span>
@@ -129,7 +129,7 @@ export const DestinationMarker: React.FC<MarkerProps> = ({ position, label = 'DE
         </mesh>
 
         {/* High-visibility 3D HTML Badge */}
-        <Html position={[0, 1.3, 0]} center distanceFactor={70}>
+        <Html position={[0, 1.3, 0]} center distanceFactor={70} zIndexRange={[15, 0]}>
           <div className="flex flex-col items-center pointer-events-none select-none">
             <div className="bg-rose-600/95 border-2 border-rose-300 text-white font-bold text-xs px-2.5 py-0.5 rounded-full shadow-lg shadow-rose-500/50 flex items-center gap-1.5 whitespace-nowrap animate-bounce">
               <span className="w-2 h-2 rounded-full bg-white inline-block animate-ping"></span>

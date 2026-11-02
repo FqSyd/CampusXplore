@@ -41,7 +41,8 @@ export const NodeAnalysisCard: React.FC<NodeAnalysisCardProps> = ({
 
   return (
     <div
-      className={`absolute top-4 right-4 z-30 w-84 md:w-96 rounded-2xl glass-panel border border-cyan-500/40 bg-slate-950/85 backdrop-blur-xl p-4 shadow-2xl shadow-cyan-950/40 text-slate-100 flex flex-col gap-3 transition-all animate-fadeIn ${className}`}
+      id="astar-node-analysis-panel"
+      className={`absolute top-4 right-4 z-40 w-84 md:w-96 rounded-2xl glass-panel border border-cyan-500/40 bg-slate-950/90 backdrop-blur-xl p-4 shadow-2xl shadow-cyan-950/40 text-slate-100 flex flex-col gap-3 transition-all animate-fadeIn ${className}`}
       style={{ maxHeight: 'calc(100vh - 120px)', overflowY: 'auto' }}
     >
       {/* Header with Title and Close Button */}
