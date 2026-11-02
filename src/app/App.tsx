@@ -17,10 +17,9 @@ import {
   WalkerProgress,
 } from '../types';
 import { Campus3D } from '../components/campus';
-import { Campus2D } from '../components/map';
+import { Campus2D, MapToolbar } from '../components/map';
 import { Header } from '../components/layout';
 import { NavigationPanel } from '../components/navigation';
-import { CameraControls } from '../components/ui';
 import { AlgorithmCode, NodeAnalysisCard } from '../components/algorithm';
 
 export const App: React.FC = () => {
@@ -268,7 +267,6 @@ export const App: React.FC = () => {
     setWalkerPosition(null);
     setRerouteNotice('');
     setSelectedNodeId(null);
-    setIsAnalysisCardOpen(false);
   }, []);
 
   // Handler: Select specific waypoint node on route
@@ -394,82 +392,12 @@ export const App: React.FC = () => {
           onSelectNode={handleSelectNode}
         />
 
-        {/* Center / Right Visualization Canvas (3D Campus OR 2D Topographic Map - Never overlapping!) */}
-        <main className="flex-1 relative h-full">
-          {viewType === '3d' ? (
-            /* Full 3D Campus Simulation with 3D Walking Character */
-            <Campus3D
-              buildings={buildings}
-              graph={graph}
-              obstacles={obstacles}
-              activeObstacleIds={activeObstacleIds}
-              startBuilding={startBuilding}
-              destBuilding={destBuilding}
-              startNode={startNode}
-              destNode={destNode}
-              routeCoordinates={result?.pathCoordinates || []}
-              showRoute={showRoute}
-              showLabels={showLabels}
-              viewMode={viewMode}
-              focusTarget={focusTarget}
-              explorationSteps={result?.steps || []}
-              currentStepIndex={currentStepIndex}
-              isSearching={isSearching}
-              showSearchAnimation={animateSearch && isSearching}
-              onSelectBuilding={handleSelectBuilding}
-              onWalkerProgress={setWalkerProgress}
-              onWalkerPositionChange={setWalkerPosition}
-              onWalkerArrived={handleWalkerArrived}
-              routeNodesAnalysis={result?.routeNodesAnalysis || []}
-              selectedNodeId={selectedNodeId}
-              onSelectNode={handleSelectNode}
-              isAnalysisPanelOpen={(showRoute || isSearching) && isAnalysisCardOpen}
-            />
-          ) : (
-            /* Full 2D Topographic Campus Map (Replaces main area cleanly, no floating overlay) */
-            <Campus2D
-              buildings={buildings}
-              nodes={nodes}
-              edges={edges}
-              obstacles={obstacles}
-              activeObstacleIds={activeObstacleIds}
-              startBuildingId={startBuildingId}
-              destBuildingId={destBuildingId}
-              startNodeId={startNode?.id || null}
-              destNodeId={destNode?.id || null}
-              routeNodeIds={result?.path || []}
-              routeCoordinates={result?.pathCoordinates || []}
-              onSelectBuilding={handleSelectBuilding}
-              isMinimap={false}
-              selectedNodeId={selectedNodeId}
-              onSelectNode={handleSelectNode}
-            />
-          )}
-
-          {/* Floating A* Node-Level Calculation Analysis Card (HUD) */}
-          {(showRoute || isSearching) && isAnalysisCardOpen && (
-            <NodeAnalysisCard
-              selectedNode={selectedNodeAnalysis}
-              currentStep={isSearching && result?.steps ? result.steps[currentStepIndex] : null}
-              isSearching={isSearching}
-              onSelectWaypointIndex={handleSelectWaypointIndex}
-              onClose={() => setIsAnalysisCardOpen(false)}
-            />
-          )}
-
-          {/* Quick Re-open Node Analysis Button if minimized (positioned next to CameraControls) */}
-          {showRoute && !isAnalysisCardOpen && (
-            <button
-              onClick={() => setIsAnalysisCardOpen(true)}
-              className="absolute top-4 right-44 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-cyan-400 hover:text-cyan-300 border border-cyan-500/40 shadow-lg text-xs font-semibold backdrop-blur-md transition cursor-pointer"
-              title="Open A* Node Analysis panel"
-            >
-              <span>A* Node Analysis</span>
-            </button>
-          )}
-
-          {/* Floating Camera & View Controls */}
-          <CameraControls
+        {/* Center Section: Main 3D/2D Campus Map + Dedicated Compact Toolbar */}
+        <main className="flex-1 relative h-full flex flex-col min-w-0 overflow-hidden bg-[#090D14]">
+          {/* Dedicated Compact Toolbar at top of Central Map */}
+          <MapToolbar
+            viewType={viewType}
+            onToggleViewType={(newType) => setViewType(newType)}
             viewMode={viewMode}
             onSetViewMode={setViewMode}
             showLabels={showLabels}
@@ -479,12 +407,90 @@ export const App: React.FC = () => {
             onFocusDest={handleFocusDest}
             hasStart={!!startBuilding}
             hasDest={!!destBuilding}
-            viewType={viewType}
-            onToggleViewType={() => setViewType(viewType === '3d' ? '2d' : '3d')}
             hasActiveRoute={hasActiveRoute}
-            isAnalysisPanelOpen={(showRoute || isSearching) && isAnalysisCardOpen}
+            isAnalysisOpen={isAnalysisCardOpen}
+            onToggleAnalysis={() => setIsAnalysisCardOpen((prev) => !prev)}
           />
+
+          {/* Central Map Canvas: Expands into full available space */}
+          <div className="flex-1 relative w-full h-full min-h-0 overflow-hidden">
+            {viewType === '3d' ? (
+              /* Full 3D Campus Simulation with 3D Walking Character */
+              <Campus3D
+                buildings={buildings}
+                graph={graph}
+                obstacles={obstacles}
+                activeObstacleIds={activeObstacleIds}
+                startBuilding={startBuilding}
+                destBuilding={destBuilding}
+                startNode={startNode}
+                destNode={destNode}
+                routeCoordinates={result?.pathCoordinates || []}
+                showRoute={showRoute}
+                showLabels={showLabels}
+                viewMode={viewMode}
+                focusTarget={focusTarget}
+                explorationSteps={result?.steps || []}
+                currentStepIndex={currentStepIndex}
+                isSearching={isSearching}
+                showSearchAnimation={animateSearch && isSearching}
+                onSelectBuilding={handleSelectBuilding}
+                onWalkerProgress={setWalkerProgress}
+                onWalkerPositionChange={setWalkerPosition}
+                onWalkerArrived={handleWalkerArrived}
+                routeNodesAnalysis={result?.routeNodesAnalysis || []}
+                selectedNodeId={selectedNodeId}
+                onSelectNode={handleSelectNode}
+                isAnalysisPanelOpen={isAnalysisCardOpen}
+              />
+            ) : (
+              /* Full 2D Topographic Campus Map (Replaces main area cleanly, no floating overlay) */
+              <Campus2D
+                buildings={buildings}
+                nodes={nodes}
+                edges={edges}
+                obstacles={obstacles}
+                activeObstacleIds={activeObstacleIds}
+                startBuildingId={startBuildingId}
+                destBuildingId={destBuildingId}
+                startNodeId={startNode?.id || null}
+                destNodeId={destNode?.id || null}
+                routeNodeIds={result?.path || []}
+                routeCoordinates={result?.pathCoordinates || []}
+                onSelectBuilding={handleSelectBuilding}
+                isMinimap={false}
+                selectedNodeId={selectedNodeId}
+                onSelectNode={handleSelectNode}
+              />
+            )}
+          </div>
         </main>
+
+        {/* Right Section: A* Node Analysis Panel (Fixed width on desktop, drawer on mobile) */}
+        {isAnalysisCardOpen && (
+          <>
+            {/* Backdrop for mobile drawer */}
+            <div
+              className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-30 transition-opacity"
+              onClick={() => setIsAnalysisCardOpen(false)}
+              aria-hidden="true"
+            />
+
+            <aside
+              id="astar-analysis-dock"
+              className="w-full md:w-84 lg:w-96 shrink-0 h-full border-l border-slate-800/80 bg-slate-950/95 flex flex-col z-40 max-md:fixed max-md:inset-y-0 max-md:right-0 max-md:max-w-md max-md:shadow-2xl overflow-hidden transition-all duration-300"
+            >
+              <NodeAnalysisCard
+                selectedNode={selectedNodeAnalysis}
+                currentStep={isSearching && result?.steps ? result.steps[currentStepIndex] : null}
+                isSearching={isSearching}
+                onSelectWaypointIndex={handleSelectWaypointIndex}
+                onClose={() => setIsAnalysisCardOpen(false)}
+                isDocked={true}
+              />
+            </aside>
+          </>
+        )}
       </div>
 
       {/* A* Algorithm Explanation Modal */}

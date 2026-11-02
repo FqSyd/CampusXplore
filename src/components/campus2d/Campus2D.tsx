@@ -78,10 +78,12 @@ export const Campus2D: React.FC<Campus2DProps> = ({
       }`}
     >
       <svg
-        width={mapSize}
-        height={mapSize}
         viewBox={`0 0 ${mapSize} ${mapSize}`}
-        className="overflow-visible"
+        className={`overflow-visible ${
+          isMinimap
+            ? 'w-[280px] h-[280px]'
+            : 'w-full h-full max-w-[650px] max-h-[650px] aspect-square'
+        }`}
       >
         <defs>
           {/* Diagonal caution stripes pattern for blocked obstacles */}

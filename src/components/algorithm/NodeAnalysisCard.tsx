@@ -1,6 +1,6 @@
 import React from 'react';
 import { RouteNodeAnalysis, AStarStep } from '../../types';
-import { ChevronLeft, ChevronRight, X, Compass, Activity, CheckCircle2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Compass, Activity, CheckCircle2, Info } from 'lucide-react';
 
 export interface NodeAnalysisCardProps {
   selectedNode: RouteNodeAnalysis | null;
@@ -9,6 +9,7 @@ export interface NodeAnalysisCardProps {
   onSelectWaypointIndex?: (index: number) => void;
   onClose?: () => void;
   className?: string;
+  isDocked?: boolean;
 }
 
 export const NodeAnalysisCard: React.FC<NodeAnalysisCardProps> = ({
@@ -18,20 +19,112 @@ export const NodeAnalysisCard: React.FC<NodeAnalysisCardProps> = ({
   onSelectWaypointIndex,
   onClose,
   className = '',
+  isDocked = false,
 }) => {
   // If in active search mode and we have a step, prefer current step info; otherwise use selected waypoint node
   const isSearchMode = isSearching && !!currentStep;
 
+  // Standby view if user opened A* Analysis panel before calculating a route
   if (!selectedNode && !currentStep) {
-    return null;
+    return (
+      <div
+        id="astar-node-analysis-panel"
+        className={
+          isDocked
+            ? `w-full h-full flex flex-col gap-3.5 p-4 overflow-y-auto bg-slate-950/95 text-slate-100 ${className}`
+            : `absolute top-4 right-4 z-40 w-84 md:w-96 rounded-2xl glass-panel border border-cyan-500/40 bg-slate-950/90 backdrop-blur-xl p-4 shadow-2xl shadow-cyan-950/40 text-slate-100 flex flex-col gap-3 transition-all animate-fadeIn ${className}`
+        }
+        style={isDocked ? { height: '100%', overflowY: 'auto' } : { maxHeight: 'calc(100vh - 120px)', overflowY: 'auto' }}
+      >
+        {/* Header with Title and Close Button */}
+        <div className="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-400">
+              <Compass className="w-4 h-4" />
+            </div>
+            <div>
+              <h3 className="text-xs font-black tracking-wider uppercase text-cyan-300">
+                A* Node Analysis
+              </h3>
+              <p className="text-[10px] text-slate-400 font-medium">Algorithm Evaluator</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-cyan-950 text-cyan-400 border border-cyan-700/50">
+              STANDBY
+            </span>
+            {onClose && (
+              <button
+                onClick={onClose}
+                className="w-6 h-6 rounded-md hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition ml-1 cursor-pointer"
+                title="Close panel"
+                aria-label="Close panel"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Formula Reference */}
+        <div className="bg-slate-900/90 rounded-xl p-3 border border-cyan-500/30 space-y-2.5">
+          <div className="flex items-center justify-between text-xs font-semibold text-slate-300">
+            <span>Evaluation Formula</span>
+            <span className="font-mono text-cyan-300 font-bold bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/50 text-xs">
+              f(n) = g(n) + h(n)
+            </span>
+          </div>
+
+          <div className="space-y-1.5 text-[11px] text-slate-300">
+            <div className="flex items-start gap-1.5">
+              <span className="font-mono font-bold text-emerald-400 shrink-0">g(n):</span>
+              <span className="text-slate-400">
+                Exact accumulated walking distance from starting point in meters.
+              </span>
+            </div>
+            <div className="flex items-start gap-1.5">
+              <span className="font-mono font-bold text-cyan-400 shrink-0">h(n):</span>
+              <span className="text-slate-400">
+                Straight-line Euclidean heuristic distance to destination in meters.
+              </span>
+            </div>
+            <div className="flex items-start gap-1.5">
+              <span className="font-mono font-bold text-purple-400 shrink-0">f(n):</span>
+              <span className="text-slate-400">
+                Total estimated cost used by the priority queue to select the next node.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* User Guide Box */}
+        <div className="bg-cyan-950/20 border border-cyan-800/40 rounded-xl p-3 text-[11px] text-cyan-200/90 leading-relaxed space-y-2">
+          <div className="flex items-center gap-1.5 font-semibold text-cyan-300">
+            <Info className="w-4 h-4 text-cyan-400" />
+            <span>How to Inspect Calculations</span>
+          </div>
+          <ol className="list-decimal list-inside space-y-1 text-slate-300 pl-1">
+            <li>Select your Start and Destination locations.</li>
+            <li>Click <strong>Find Optimal Route</strong>.</li>
+            <li>Live step-by-step waypoint evaluations will populate here automatically.</li>
+            <li>Click any circular waypoint node on the map to inspect its exact scores.</li>
+          </ol>
+        </div>
+      </div>
+    );
   }
 
-  const nodeName = isSearchMode ? (currentStep?.nodeName || currentStep?.nodeId) : (selectedNode?.nodeName || selectedNode?.nodeId);
+  const nodeName = isSearchMode
+    ? currentStep?.nodeName || currentStep?.nodeId
+    : selectedNode?.nodeName || selectedNode?.nodeId;
   const nodeId = isSearchMode ? currentStep?.nodeId : selectedNode?.nodeId;
-  const g = isSearchMode ? (currentStep?.g ?? 0) : (selectedNode?.g ?? 0);
-  const h = isSearchMode ? (currentStep?.h ?? 0) : (selectedNode?.h ?? 0);
-  const f = isSearchMode ? (currentStep?.f ?? (g + h)) : (selectedNode?.f ?? (g + h));
-  const parentName = isSearchMode ? (currentStep?.parentName || currentStep?.parent) : (selectedNode?.parentName || selectedNode?.parent);
+  const g = isSearchMode ? currentStep?.g ?? 0 : selectedNode?.g ?? 0;
+  const h = isSearchMode ? currentStep?.h ?? 0 : selectedNode?.h ?? 0;
+  const f = isSearchMode ? currentStep?.f ?? g + h : selectedNode?.f ?? g + h;
+  const parentName = isSearchMode
+    ? currentStep?.parentName || currentStep?.parent
+    : selectedNode?.parentName || selectedNode?.parent;
   const expansionOrder = isSearchMode ? currentStep?.stepNumber : selectedNode?.expansionOrder;
   const candidates = isSearchMode ? currentStep?.openSetCandidates : undefined;
   const selectionReason = isSearchMode ? currentStep?.selectionReason : undefined;
@@ -42,11 +135,15 @@ export const NodeAnalysisCard: React.FC<NodeAnalysisCardProps> = ({
   return (
     <div
       id="astar-node-analysis-panel"
-      className={`absolute top-4 right-4 z-40 w-84 md:w-96 rounded-2xl glass-panel border border-cyan-500/40 bg-slate-950/90 backdrop-blur-xl p-4 shadow-2xl shadow-cyan-950/40 text-slate-100 flex flex-col gap-3 transition-all animate-fadeIn ${className}`}
-      style={{ maxHeight: 'calc(100vh - 120px)', overflowY: 'auto' }}
+      className={
+        isDocked
+          ? `w-full h-full flex flex-col gap-3.5 p-4 overflow-y-auto bg-slate-950/95 text-slate-100 select-text ${className}`
+          : `absolute top-4 right-4 z-40 w-84 md:w-96 rounded-2xl glass-panel border border-cyan-500/40 bg-slate-950/90 backdrop-blur-xl p-4 shadow-2xl shadow-cyan-950/40 text-slate-100 flex flex-col gap-3 transition-all animate-fadeIn ${className}`
+      }
+      style={isDocked ? { height: '100%', overflowY: 'auto' } : { maxHeight: 'calc(100vh - 120px)', overflowY: 'auto' }}
     >
       {/* Header with Title and Close Button */}
-      <div className="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
+      <div className="flex items-center justify-between border-b border-slate-800/80 pb-2.5 shrink-0">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-400">
             {isSearchMode ? <Activity className="w-4 h-4 animate-pulse" /> : <Compass className="w-4 h-4" />}
@@ -77,7 +174,7 @@ export const NodeAnalysisCard: React.FC<NodeAnalysisCardProps> = ({
           {onClose && (
             <button
               onClick={onClose}
-              className="w-6 h-6 rounded-md hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition ml-1"
+              className="w-6 h-6 rounded-md hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition ml-1 cursor-pointer"
               title="Close panel"
               aria-label="Close panel"
             >
@@ -88,7 +185,7 @@ export const NodeAnalysisCard: React.FC<NodeAnalysisCardProps> = ({
       </div>
 
       {/* Selected Node Name & ID */}
-      <div className="bg-slate-900/90 rounded-xl p-2.5 border border-slate-800/80 flex items-center justify-between">
+      <div className="bg-slate-900/90 rounded-xl p-2.5 border border-slate-800/80 flex items-center justify-between shrink-0">
         <div className="flex flex-col">
           <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
             Selected Waypoint Node
@@ -108,7 +205,7 @@ export const NodeAnalysisCard: React.FC<NodeAnalysisCardProps> = ({
       </div>
 
       {/* Formula & Breakdown: f(n) = g(n) + h(n) */}
-      <div className="bg-slate-900/90 rounded-xl p-3 border border-cyan-500/30 space-y-2">
+      <div className="bg-slate-900/90 rounded-xl p-3 border border-cyan-500/30 space-y-2.5 shrink-0">
         <div className="flex items-center justify-between text-xs font-semibold text-slate-300">
           <span>Cost Evaluation Formula</span>
           <span className="font-mono text-cyan-300 font-bold bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/50">
@@ -158,7 +255,7 @@ export const NodeAnalysisCard: React.FC<NodeAnalysisCardProps> = ({
       </div>
 
       {/* Parent / Predecessor Info */}
-      <div className="bg-slate-900/70 rounded-xl px-3 py-2 border border-slate-800/80 flex items-center justify-between text-xs">
+      <div className="bg-slate-900/70 rounded-xl px-3 py-2 border border-slate-800/80 flex items-center justify-between text-xs shrink-0">
         <span className="text-slate-400 text-[11px]">Predecessor (Parent Node):</span>
         <span className="font-mono font-medium text-slate-200">
           {parentName ? `${parentName}` : 'None (Origin)'}
@@ -167,14 +264,14 @@ export const NodeAnalysisCard: React.FC<NodeAnalysisCardProps> = ({
 
       {/* Natural Language Explanation Box */}
       {selectedNode?.explanation && !isSearchMode && (
-        <div className="bg-cyan-950/20 border border-cyan-800/40 rounded-xl p-2.5 text-[11px] leading-relaxed text-cyan-200/90">
+        <div className="bg-cyan-950/20 border border-cyan-800/40 rounded-xl p-2.5 text-[11px] leading-relaxed text-cyan-200/90 shrink-0">
           <p className="italic">"{selectedNode.explanation}"</p>
         </div>
       )}
 
       {/* If Search Animation is running, display candidate comparison */}
       {isSearchMode && (
-        <div className="bg-slate-900/90 rounded-xl p-2.5 border border-amber-500/30 space-y-2">
+        <div className="bg-slate-900/90 rounded-xl p-2.5 border border-amber-500/30 space-y-2 shrink-0">
           {selectionReason && (
             <div className="text-[11px] text-amber-300 leading-tight">
               <strong>Selection Logic:</strong> {selectionReason}
@@ -186,7 +283,7 @@ export const NodeAnalysisCard: React.FC<NodeAnalysisCardProps> = ({
               <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
                 Open Set Candidates (sorted by lowest f score):
               </span>
-              <div className="max-h-24 overflow-y-auto space-y-1 pr-1">
+              <div className="max-h-28 overflow-y-auto space-y-1 pr-1">
                 {candidates.map((cand) => (
                   <div
                     key={cand.nodeId}
@@ -210,11 +307,11 @@ export const NodeAnalysisCard: React.FC<NodeAnalysisCardProps> = ({
 
       {/* Waypoint Stepping Controls (Previous / Next along Route) */}
       {!isSearchMode && onSelectWaypointIndex && totalWaypoints > 1 && (
-        <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-800/80">
+        <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-800/80 shrink-0">
           <button
             onClick={() => onSelectWaypointIndex(Math.max(0, waypointIdx - 2))}
             disabled={waypointIdx <= 1}
-            className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed border border-slate-800 transition text-xs font-medium"
+            className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed border border-slate-800 transition text-xs font-medium cursor-pointer"
           >
             <ChevronLeft className="w-3.5 h-3.5" />
             <span>Prev Waypoint</span>
@@ -227,7 +324,7 @@ export const NodeAnalysisCard: React.FC<NodeAnalysisCardProps> = ({
           <button
             onClick={() => onSelectWaypointIndex(Math.min(totalWaypoints - 1, waypointIdx))}
             disabled={waypointIdx >= totalWaypoints}
-            className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white disabled:opacity-30 disabled:cursor-not-allowed shadow-md shadow-cyan-600/30 transition text-xs font-semibold"
+            className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white disabled:opacity-30 disabled:cursor-not-allowed shadow-md shadow-cyan-600/30 transition text-xs font-semibold cursor-pointer"
           >
             <span>Next Waypoint</span>
             <ChevronRight className="w-3.5 h-3.5" />
@@ -236,7 +333,7 @@ export const NodeAnalysisCard: React.FC<NodeAnalysisCardProps> = ({
       )}
 
       {/* Small Hint */}
-      <div className="text-[10px] text-slate-500 text-center flex items-center justify-center gap-1">
+      <div className="text-[10px] text-slate-500 text-center flex items-center justify-center gap-1 mt-auto pt-2 shrink-0">
         <CheckCircle2 className="w-3 h-3 text-cyan-400" />
         <span>Click any circular waypoint along route to inspect its A* score</span>
       </div>
